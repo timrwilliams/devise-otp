@@ -28,7 +28,7 @@ module DeviseOtpAuthenticatable::Hooks
         sign_in(resource_name, resource)
         respond_with resource, :location => otp_token_path_for(resource)
       else
-
+        store_location_for(resource, devise_stored_location) # restore the stored location
         set_flash_message(:notice, :signed_in) if is_navigational_format?
         sign_in(resource_name, resource)
         respond_with resource, :location => after_sign_in_path_for(resource)
