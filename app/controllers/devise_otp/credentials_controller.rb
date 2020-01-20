@@ -1,8 +1,8 @@
 class DeviseOtp::CredentialsController < DeviseController
   helper_method :new_session_path
 
-  prepend_before_filter :authenticate_scope!, :only => [:get_refresh, :set_refresh]
-  prepend_before_filter :require_no_authentication, :only => [ :show, :update ]
+  prepend_before_action :authenticate_scope!, :only => [:get_refresh, :set_refresh]
+  prepend_before_action :require_no_authentication, :only => [ :show, :update ]
 
   #
   # show a request for the OTP token
@@ -39,7 +39,7 @@ class DeviseOtp::CredentialsController < DeviseController
     if token.blank?
       otp_set_flash_message(:alert, :token_blank)
       redirect_to otp_credential_path_for(resource_name, :challenge => params[resource_name][:challenge],
-                                                         :recovery => recovery)
+                                          :recovery => recovery)
     elsif resource.nil?
       otp_set_flash_message(:alert, :otp_session_invalid)
       redirect_to new_session_path(resource_name)

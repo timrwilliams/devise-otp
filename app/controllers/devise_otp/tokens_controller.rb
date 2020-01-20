@@ -1,8 +1,8 @@
 class DeviseOtp::TokensController < DeviseController
   include Devise::Controllers::Helpers
 
-  prepend_before_filter :ensure_credentials_refresh
-  prepend_before_filter :authenticate_scope!
+  prepend_before_action :ensure_credentials_refresh
+  prepend_before_action :authenticate_scope!
 
   protect_from_forgery :except => [:clear_persistence, :delete_persistence]
 
@@ -10,7 +10,7 @@ class DeviseOtp::TokensController < DeviseController
   # Displays the status of OTP authentication
   #
   def show
-   if resource.nil?
+    if resource.nil?
       redirect_to stored_location_for(scope) || :root
     else
       render :show
