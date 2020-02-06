@@ -3,9 +3,14 @@ module DeviseOtpAuthenticatable::Hooks
     extend ActiveSupport::Concern
     include DeviseOtpAuthenticatable::Controllers::UrlHelpers
 
-    included do
-      alias_method_chain :create, :otp
-    end
+    #
+    # Removed for Rails 5.1 compatibility.
+    # You must override the Sessions#create method directly in your
+    # own SessionsController to allow OTP to work.
+    #
+    #included do
+    #  alias_method_chain :create, :otp
+    #end
 
     #
     # replaces Devise::SessionsController#create
