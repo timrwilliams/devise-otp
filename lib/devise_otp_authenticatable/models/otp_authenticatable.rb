@@ -41,7 +41,7 @@ module Devise::Models
       @recovery_otp = nil
       generate_otp_auth_secret
       reset_otp_persistence
-      update_attributes!(:otp_enabled => false,
+      update!(:otp_enabled => false,
              :otp_session_challenge => nil, :otp_challenge_expires => nil,
              :otp_recovery_counter => 0)
     end
