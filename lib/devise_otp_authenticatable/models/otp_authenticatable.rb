@@ -65,15 +65,15 @@ module Devise::Models
         reset_otp_credentials!
       end
 
-      update_attributes!(:otp_enabled => true, :otp_enabled_on => Time.now)
+      update!(:otp_enabled => true, :otp_enabled_on => Time.now)
     end
 
     def disable_otp!
-      update_attributes!(:otp_enabled => false, :otp_enabled_on => nil)
+      update!(:otp_enabled => false, :otp_enabled_on => nil)
     end
 
     def generate_otp_challenge!(expires = nil)
-      update_attributes!(:otp_session_challenge => SecureRandom.hex,
+      update!(:otp_session_challenge => SecureRandom.hex,
              :otp_challenge_expires => DateTime.now + (expires || self.class.otp_authentication_timeout))
       otp_session_challenge
     end
