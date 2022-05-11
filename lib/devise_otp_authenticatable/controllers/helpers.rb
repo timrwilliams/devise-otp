@@ -1,9 +1,6 @@
 module DeviseOtpAuthenticatable
-
   module Controllers
     module Helpers
-
-
       def authenticate_scope!
         send(:"authenticate_#{resource_name}!", :force => true)
         self.resource = send("current_#{resource_name}")
@@ -13,7 +10,7 @@ module DeviseOtpAuthenticatable
       # similar to DeviseController#set_flash_message, but sets the scope inside
       # the otp controller
       #
-      def otp_set_flash_message(key, kind, options={})
+      def otp_set_flash_message(key, kind, options = {})
         options[:scope] ||= "devise.otp.#{controller_name}"
         options[:default] = Array(options[:default]).unshift(kind.to_sym)
         options[:resource_name] = resource_name
@@ -23,9 +20,7 @@ module DeviseOtpAuthenticatable
       end
 
       def otp_t()
-
       end
-
 
       def trusted_devices_enabled?
         resource.class.otp_trust_persistence && (resource.class.otp_trust_persistence > 0)
@@ -44,7 +39,6 @@ module DeviseOtpAuthenticatable
         end
       end
 
-
       # fixme do cookies and persistence need to be scoped? probably
 
       #
@@ -55,7 +49,7 @@ module DeviseOtpAuthenticatable
         return false unless resource.class.otp_credentials_refresh
 
         (!session[otp_scoped_refresh_property].present? ||
-            (session[otp_scoped_refresh_property] < DateTime.now)).tap { |need| otp_set_refresh_return_url if need }
+         (session[otp_scoped_refresh_property] < DateTime.now)).tap { |need| otp_set_refresh_return_url if need }
       end
 
       #
@@ -66,7 +60,6 @@ module DeviseOtpAuthenticatable
         session[otp_scoped_refresh_property] = (Time.now + resource.class.otp_credentials_refresh)
       end
 
-
       #
       # is the current browser trusted?
       #
@@ -74,7 +67,7 @@ module DeviseOtpAuthenticatable
         return false unless resource.class.otp_trust_persistence
         if cookies[otp_scoped_persistence_cookie].present?
           cookies.signed[otp_scoped_persistence_cookie] ==
-              [resource.to_key, resource.authenticatable_salt, resource.otp_persistence_seed]
+            [resource.to_key, resource.authenticatable_salt, resource.otp_persistence_seed]
         else
           false
         end
@@ -86,9 +79,9 @@ module DeviseOtpAuthenticatable
       def otp_set_trusted_device_for(resource)
         return unless resource.class.otp_trust_persistence
         cookies.signed[otp_scoped_persistence_cookie] = {
-            :httponly => true,
-            :expires => Time.now + resource.class.otp_trust_persistence,
-            :value => [resource.to_key, resource.authenticatable_salt, resource.otp_persistence_seed]
+          :httponly => true,
+          :expires => Time.now + resource.class.otp_trust_persistence,
+          :value => [resource.to_key, resource.authenticatable_salt, resource.otp_persistence_seed],
         }
       end
 
@@ -98,7 +91,6 @@ module DeviseOtpAuthenticatable
 
       def otp_fetch_refresh_return_url
         session.delete(otp_scoped_refresh_return_url_property) { :root }
-
       end
 
       def otp_scoped_refresh_return_url_property
@@ -120,7 +112,6 @@ module DeviseOtpAuthenticatable
         cookies.delete(otp_scoped_persistence_cookie)
       end
 
-
       #
       # clears the persistence list for this kind of resource
       #
@@ -139,10 +130,9 @@ module DeviseOtpAuthenticatable
       private
 
       def otp_authenticator_token_image_js(otp_url)
-
-        content_tag(:div, :class => 'qrcode-container') do
-          tag(:div, :id => 'qrcode', :class => 'qrcode') +
-          javascript_tag(%Q[
+        content_tag(:div, :class => "qrcode-container") do
+          content_tag(:div, :id => "qrcode", :class => "qrcode") do
+            javascript_tag(%Q[
 
             new QRCode("qrcode", {
               text: "#{otp_url}",
@@ -152,17 +142,16 @@ module DeviseOtpAuthenticatable
               colorLight : "#ffffff",
               correctLevel : QRCode.CorrectLevel.H
             });
-          ]) + tag("/div")
+          ])
+          end
         end
       end
-
 
       def otp_authenticator_token_image_google(otp_url)
         otp_url = Rack::Utils.escape(otp_url)
         url = "https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=#{otp_url}"
-        image_tag(url, :alt => 'OTP Url QRCode')
+        image_tag(url, :alt => "OTP Url QRCode")
       end
-
     end
   end
 end
